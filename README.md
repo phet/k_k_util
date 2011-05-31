@@ -64,38 +64,37 @@ Functions for constraining the range of a value.
 
 - `k_k_.algo.Consistent_Choice[T]`
 
-    import k_k_.algo.Consistent_Choice
+        import k_k_.algo.Consistent_Choice
 
-    // load-balance with weight favoring odd numbered handlers 2:1
-    val handlers = 0 until 5 map { n => ("handler" + n,
-                                         if (n % 2 == 0) 1.0 else 2.0)
+        // load-balance with weight favoring odd numbered handlers 2:1
+        val handlers = 0 until 5 map { n => ("handler" + n,
+                                             if (n % 2 == 0) 1.0 else 2.0)
         }
-    // = Seq[(String, Double)](("handler0", 1.0), ("handler1", 2.0), ...)
+        // = Seq[(String, Double)](("handler0", 1.0), ("handler1", 2.0), ...)
 
-    val choice_multiple = 100
-    val choices = Consistent_Choice[String](choice_multiple) ++ handlers
-    ...
+        val choice_multiple = 100
+        val choices = Consistent_Choice[String](choice_multiple) ++ handlers
+        ...
 
-    for {
-      req <- req_stream
-    } {
-      val handler = choices.choose_for(calc_req_header_sig(req))
-      Handler_Mgr.get(handler) match {
-        case Some(handler_actor) => handler_actor ! req
-        case None => send_err_response(req)
-      }
-    }
+        for {
+          req <- req_stream
+        } {
+          val handler = choices.choose_for(calc_req_header_sig(req))
+          Handler_Mgr.get(handler) match {
+            case Some(handler_actor) => handler_actor ! req
+            case None => send_err_response(req)
+          }
+        }
 
 
 - `k_k_.data.rand.Rand_Gen`
 
-    import k_k_.data.rand._
+        import k_k_.data.rand._
 
-    val rand = new Rand_Gen with Truly_Random // cryptograpically-secure
-    val (n, guess, blah_blah) = (rand.gen_long,
-                                 rand.gen_int_between(1, 100),
-                                 rand.gen_str(5, 25))
-
+        val rand = new Rand_Gen with Truly_Random // cryptograpically-secure
+        val (n, guess, blah_blah) = (rand.gen_long,
+                                     rand.gen_int_between(1, 100),
+                                     rand.gen_str(5, 25))
 
 
 ## License
