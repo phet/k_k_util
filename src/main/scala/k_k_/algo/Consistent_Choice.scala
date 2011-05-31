@@ -67,7 +67,7 @@ object Consistent_Choice {
     empty[T] ++ kvs
 
   /*
-     this version is to strict in only providing implicit for Pair[_, Double],
+     this version is too strict in only providing implicit for Pair[_, Double],
      even though one feels it natural to use, e.g. (t: T -> 3); for generality,
      any Pair[_, AnyVal] should work!
  
