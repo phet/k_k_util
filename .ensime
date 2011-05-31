@@ -1,0 +1,12 @@
+;; This config was generated using ensime-config-gen. Feel free to customize its contents manually.
+
+(
+
+:project-name "k_k__util"
+
+:project-package "k_k_"
+
+; :use-maven t
+:use-sbt t
+
+)

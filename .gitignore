@@ -1,0 +1,8 @@
+*~
+target
+lib_managed/
+project/boot/
+target/
+files.bom
+files.exclude
+ARCHIVE/
