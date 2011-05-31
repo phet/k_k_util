@@ -37,7 +37,7 @@ object Math {
    */
   def min_max[T](x: T, y: T)(implicit cmp: Ordering[T]): (T, T) =
     (x, y) match {
-      case (min, max) if (cmp.lteq(min, max)) => (max, min)
-      case (max, min)                         => (max, min)
+      case (min, max) if (cmp.lteq(min, max)) => (min, max)
+      case (max, min)                         => (min, max)
     }
 }
