@@ -88,7 +88,7 @@ object Consistent_Choice {
     newBuilder[T](default_choice_multiple)
 
   def newBuilder[T](choice_multiple: Int):
-      Builder[(T, AnyVal), Consistent_Choice[T]] = 
+      Builder[(T, AnyVal), Consistent_Choice[T]] =
     new MapBuilder[T, AnyVal, Consistent_Choice[T]](
                                   new Consistent_Choice[T](choice_multiple)) {
         override def +=(x: (T, AnyVal)) =
@@ -96,7 +96,7 @@ object Consistent_Choice {
     }
 
   implicit def canBuildFrom[T]:
-      CanBuildFrom[Consistent_Choice[_], (T, AnyVal), Consistent_Choice[T]] = 
+      CanBuildFrom[Consistent_Choice[_], (T, AnyVal), Consistent_Choice[T]] =
     new CanBuildFrom[Consistent_Choice[_], (T, AnyVal), Consistent_Choice[T]] {
 
       def apply(from: Consistent_Choice[_]) = newBuilder[T](from.choice_mult)
@@ -146,7 +146,6 @@ object Consistent_Choice {
   }
 
   protected def force_double(v: Any): Option[Double] =
-  // it would be *really* nice if there were a type, Numeric <:< AnyVal
   // protected def force_double(v: AnyVal): Double =
   //
   // (not much in the way of forcing anything, but necessary to return Option
@@ -166,6 +165,7 @@ object Consistent_Choice {
       case bool  : Boolean => if (bool) 1.0 else 0.0
       case unit  : Unit    => 0.0
     }
+
 
   private val rand = new Rand_Gen with Truly_Random
 }
@@ -315,6 +315,15 @@ class Consistent_Choice[T] private (choice_weights: Map[T, Double],
   def iterator: Iterator[(T, Double)] =
     choice_weights.iterator
 
+  // NOTE: not possible to utilize Numeric[X].toDouble conversion since adding
+  // the context bound would defy superclass Map[T, Double]`s contract. (i.e.
+  //   def + [N >: Double : Numeric](kv: (T, N)): Consistent_Choice[T] =
+  // ... as it is, the contract is broken at run-time, since Map#B (value type)
+  // is essentially considered invariant by the extending Consistent_Choice[T].
+  // this bad behavior is rationalized by the advantage of telling the compiler
+  // that the return type is Consistent_Choice[T], rather than Map[T, X]: one
+  // looses the ability to return Map[T, Any], and yet avoids the inconvenience
+  // of needing to cast Map[T, AnyVal] to Consistent_Choice[T].
   def + [X >: Double](kv: (T, X)): Consistent_Choice[T] =
     force_double(kv._2) match {
       case Some(v) => calc_updated(choice_weights + (kv._1 -> v))
