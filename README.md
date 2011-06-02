@@ -1,7 +1,7 @@
 `k_k_util` - Kip's collection of personal utility libraries for
 [Scala](http://www.scala-lang.org/).
 
-* [Scaladoc](http://tie-illustrates-everything.com/docs/scaladocs/k_k_util/1.1.0/index.html)
+* [Scaladoc](http://tie-illustrates.everything.cloudbees.net/scaladocs/k_k_util/1.1.0/)
 
 
 ## Highlights
