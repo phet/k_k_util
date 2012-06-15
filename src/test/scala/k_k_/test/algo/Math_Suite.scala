@@ -23,6 +23,7 @@ import org.scalatest.matchers.ShouldMatchers
 import k_k_.algo.Math
 
 
+@org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class Math_Suite extends FunSuite with ShouldMatchers {
 
   class Funky(val n: Int, name: String) {
