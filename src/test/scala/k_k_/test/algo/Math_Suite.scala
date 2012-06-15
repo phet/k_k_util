@@ -17,32 +17,21 @@
 */
 package k_k_.test.algo
 
-import org.junit.Test
-import org.scalatest.junit.JUnitSuite
+import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
 
 import k_k_.algo.Math
 
 
-class Math_Suite extends JUnitSuite with ShouldMatchers {
+class Math_Suite extends FunSuite with ShouldMatchers {
 
   class Funky(val n: Int, name: String) {
-
     override val toString = "Funky(%d, \"%s\")".format(n, name)
   }
 
-  // slicker, more functional adaptation:
   implicit val Funky_Ordering = Ordering.Int.on[Funky]( _.n )
-  /* 
-    implicit object Funky_Ordering extends Ordering[Funky] {
-      def compare (x: Funky, y: Funky): Int =
-        Ordering.Int.compare(x.n, y.n)
-    }
-  */
 
-
-  @Test
-  def test_max_min {
+  test("max_min") {
     Math.max_min(16, 9)      should be ((16, 9))
     Math.max_min(10, 29)     should be ((29, 10))
     Math.max_min(15.2, 15.9) should be ((15.9, 15.2))
@@ -52,8 +41,7 @@ class Math_Suite extends JUnitSuite with ShouldMatchers {
   }
 
 
-  @Test
-  def test_min_max {
+  test("min_max") {
     Math.min_max(16, 9)      should be ((9, 16))
     Math.min_max(10, 29)     should be ((10, 29))
     Math.min_max(15.2, 15.9) should be ((15.2, 15.9))

@@ -102,6 +102,20 @@
           <scalaVersion>${scala.version}</scalaVersion>
         </configuration>
       </plugin>
+
+      <!-- see also post describing how to integrate with Specs and maven:
+             http://jpz-log.info/archives/2009/09/29/scalatest-in-maven/
+	-->
+      <plugin>  <!-- for maven 3.x, this must go in <build> -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Suite.class</include>
+            <include>**/*Test.class</include>
+          </includes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <reporting>
@@ -110,7 +124,7 @@
       <!-- see also post describing how to integrate with Specs and maven:
              http://jpz-log.info/archives/2009/09/29/scalatest-in-maven/
 	-->
-      <plugin>
+      <plugin>  <!-- for maven 2.x, this must go in <reporting> -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
