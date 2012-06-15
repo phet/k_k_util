@@ -385,9 +385,6 @@ class Consistent_Choice[T] private (choice_weights: Map[T, Double],
     val all_possible_choices = choice_values.keySet
     lazy val n_total = all_possible_choices.size
 
-    import scala.annotation.tailrec
-
-    @tailrec // ensure TCO of novel choice seek
     def stream_choices(i: Int, remaining: collection.Set[T]): Stream[T] =
       if (remaining.isEmpty) Stream.empty
       else get_choice(i) match {
