@@ -24,29 +24,29 @@ package k_k_.lex {
 object Ident {
 
   /**
-   *  Returns unqualified name (w/o package elements) of the class (or object).
+   *  @return unqualified name (w/o package elements) of the class (or object).
    * 
    *  The name returned for an object is identical to what would be returned for
    *  its companion class (i.e. the trailing '$' is dropped).
    */
-  def calc_unqual_name(clazz: Class[_]): String = {
-    val Parse_Class_Name = """.*?([^\.]+?)\$?$""".r
+  def calcUnqualName(clazz: Class[_]): String = {
+    val ParseClassName = """.*?([^\.]+?)\$?$""".r
     clazz.getName match {
-      case Parse_Class_Name(unqual_name) => unqual_name
-      case fq_name => fq_name // oh well, return name as-is
+      case ParseClassName(unqualName) => unqualName
+      case fqName => fqName // oh well, return name as-is
     }
   }
 
   /**
-   *  Returns unqualified name (w/o package elements) of the instance's class.
+   *  @return unqualified name (w/o package elements) of the instance's class.
    *
    *  The name returned for an object is identical to what would be returned for
    *  its companion class (i.e. the trailing '$' is dropped).
    */
-  def calc_unqual_class_name(obj: Any): String =
+  def calcUnqualClassName(obj: Any): String =
     obj match {
-      case clazz : Class[_] => calc_unqual_name(clazz)
-      case x => calc_unqual_name(x.asInstanceOf[AnyRef].getClass)
+      case clazz: Class[_] => calcUnqualName(clazz)
+      case x => calcUnqualName(x.asInstanceOf[AnyRef].getClass)
     }
 }
 

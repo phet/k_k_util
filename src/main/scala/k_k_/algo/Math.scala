@@ -23,21 +23,15 @@ package k_k_.algo
  */
 object Math {
 
-  /**
-   *  Returns `(x, y)` iff `x >= y`; else `(y, x)`
-   */
-  def max_min[T](x: T, y: T)(implicit cmp: Ordering[T]): (T, T) =
-    (x, y) match {
-      case (max, min) if (cmp.gteq(max, min)) => (max, min)
-      case (min, max)                         => (max, min)
-    }
+  /** @return `(x, y)` iff `x >= y`; else `(y, x)` */
+  def maxMin[T](x: T, y: T)(implicit cmp: Ordering[T]): (T, T) = (x, y) match {
+    case (max, min) if (cmp.gteq(max, min)) => (max, min)
+    case (min, max)                         => (max, min)
+  }
 
-  /**
-   *  Returns `(x, y)` iff `x <= y`; else `(y, x)`
-   */
-  def min_max[T](x: T, y: T)(implicit cmp: Ordering[T]): (T, T) =
-    (x, y) match {
-      case (min, max) if (cmp.lteq(min, max)) => (min, max)
-      case (max, min)                         => (min, max)
-    }
+  /** @return `(x, y)` iff `x <= y`; else `(y, x)` */
+  def minMax[T](x: T, y: T)(implicit cmp: Ordering[T]): (T, T) = (x, y) match {
+    case (min, max) if (cmp.lteq(min, max)) => (min, max)
+    case (max, min)                         => (min, max)
+  }
 }

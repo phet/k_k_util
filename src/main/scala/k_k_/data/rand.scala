@@ -27,10 +27,9 @@ import scala.util.Random
 
 
 /**
- *  Abstract trait conveying the ability to be seeded by a `Long` value.
+ *  Trait conveying the ability to be seeded by a `Long` value.
  */
 trait Seedable {
-
   protected def seed: Long
 }
 
@@ -39,12 +38,10 @@ trait Seedable {
  *  Implementation of <a href="Seedable.html">`Seedable`</a> that furnishes a
  *  cryptograpically secure seed.
  */
-trait Truly_Random { self: Seedable =>
-
-  override
-  final protected def seed: Long = {
-    val seed_bytes = SecureRandom.getSeed(8)
-    ByteBuffer.wrap(seed_bytes).getLong()
+trait TrulyRandom { self: Seedable =>
+  override final protected def seed: Long = {
+    val seedBytes = SecureRandom.getSeed(8)
+    ByteBuffer.wrap(seedBytes).getLong()
   }
 }
 
@@ -53,11 +50,8 @@ trait Truly_Random { self: Seedable =>
  *  Implementation of <a href="Seedable.html">`Seedable`</a> that furnishes an
  *  insecure, yet non-repeatable seed.
  */
-trait Temporally_Random { self: Seedable =>
-
-  override
-  final protected def seed: Long =
-    System.currentTimeMillis
+trait TemporallyRandom { self: Seedable =>
+  override final protected def seed: Long = System.currentTimeMillis
 }
 
 
@@ -71,105 +65,78 @@ trait Temporally_Random { self: Seedable =>
  *     }}}
  *
  *  For example, via a mixin like
- *  <a href="Truly_Random.html">`Truly_Random`</a> or
- *  <a href="Temporally_Random.html">`Temporally_Random`</a>
+ *  <a href="TrulyRandom.html">`TrulyRandom`</a> or
+ *  <a href="TemporallyRandom.html">`TemporallyRandom`</a>
  *
  *  '''Example:'''
  *
  *      {{{
  *      import k_k_.data.rand._
  * 
- *      val rand = new Rand_Gen with Truly_Random // cryptograpically-secure
- *      val (n, guess, blah_blah) = (rand.gen_long,
- *                                   rand.gen_int_between(1, 100),
- *                                   rand.gen_str(5, 25))
+ *      val rand = new RandGen with TrulyRandom // cryptograpically-secure
+ *      val (n, guess, blahBlah) = (rand.genLong,
+ *                                   rand.genIntBetween(1, 100),
+ *                                   rand.genStr(5, 25))
  *      }}}
  */
-trait Rand_Gen extends Seedable {
+trait RandGen extends Seedable {
 
-  /**
-   *  Returns the next randomally-generated `Int`.
-   */
-  def gen_int: Int =
-    rand.nextInt
+  /** @return the next randomally-generated `Int`. */
+  def genInt: Int = rand.nextInt
 
-  /**
-   *  Returns the next randomally-generated `Int` between `[ 0, max )`
-   */
-  def gen_int_below(max: Int): Int =
-    rand.nextInt(max)
+  /** @return the next randomally-generated `Int` between `[ 0, max )` */
+  def genIntBelow(max: Int): Int = rand.nextInt(max)
 
-  /**
-   *  Returns the next randomally-generated `Int` between `[ min, max )`
-   */
-  def gen_int_between(min: Int, max: Int): Int =
-    rand.nextInt(max - min) + min
+  /** @return the next randomally-generated `Int` between `[ min, max )` */
+  def genIntBetween(min: Int, max: Int): Int = rand.nextInt(max - min) + min
 
-  /**
-   *  Returns the next randomally-generated `Long`.
-   */
-  def gen_long =
-    rand.nextLong
+  /** @return the next randomally-generated `Long`. */
+  def genLong = rand.nextLong
 
 
-  /**
-   *  Returns the next randomally-generated `Boolean`.
-   */
-  def gen_bool =
-    rand.nextBoolean
+  /** @return the next randomally-generated `Boolean`. */
+  def genBool = rand.nextBoolean
 
 
-  /**
-   *  Returns the next randomally-generated `Double`.
-   */
-  def gen_double =
-    rand.nextDouble
+  /** @return the next randomally-generated `Double`. */
+  def genDouble = rand.nextDouble
 
-  /**
-   *  Returns the next randomally-generated `Float`.
-   */
-  def gen_float: Float =
-    rand.nextFloat
+  /** @return the next randomally-generated `Float`. */
+  def genFloat: Float = rand.nextFloat
 
 
-  /**
-   *  Returns the next randomally-generated `String` with length `== len`.
-   */
-  def gen_string(len: Int): String =
+  /** @return the next randomally-generated `String` with length `== len`. */
+  def genString(len: Int): String =
     // ridiculous Std. Lib. method returns ('?' * n)--why?!?!?!?
-    // rand.nextString(gen_int_between(min_len, max_len))
-    Seq.fill(len)(gen_char).mkString("")
+    // rand.nextString(genIntBetween(minLen, maxLen))
+    Seq.fill(len)(genChar).mkString("")
 
-  /**
-   *  Returns the next randomally-generated `String` with length between
-   *  `[ min_len, max_len )`.
+  /** 
+   *  @return the next randomally-generated `String` with length between
+   *  `[ minLen, maxLen )`.
    */
-  def gen_string(min_len: Int, max_len: Int): String =
-    gen_string(gen_int_between(min_len, max_len))
+  def genString(minLen: Int, maxLen: Int): String =
+    genString(genIntBetween(minLen, maxLen))
 
 
-  /**
-   *  Returns the next randomally-generated `Char`.
-   */
-  def gen_char: Char =
-    str_chars(rand.nextInt(n_str_chars))
+  /** @return the next randomally-generated `Char`. */
+  def genChar: Char = strChars(rand.nextInt(nStrChars))
 
-  /**
-   *  Returns a new collection of the same type in a randomly shuffled order.
-   */
-  def shuffle[T, C[X] <: TraversableOnce[X]]
-          (xs: C[T])(implicit bf: CanBuildFrom[C[T], T, C[T]]): C[T] =
+  /** @return a new collection of the same type in a randomly shuffled order. */
+  def shuffle[T, C[X] <: TraversableOnce[X]](
+      xs: C[T])(implicit bf: CanBuildFrom[C[T], T, C[T]]
+    ): C[T] =
     rand.shuffle(xs)
 
 
   private val rand = new Random(seed)
 
-  private val str_chars = (Seq.empty
+  private val strChars = (Seq.empty
                           ++ ('A' to 'Z')
                           ++ ('a' to 'z')
                           ++ ('0' to '9'))
 
-  private val n_str_chars = str_chars.length
+  private val nStrChars = strChars.length
 }
 
 }

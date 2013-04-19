@@ -17,67 +17,64 @@
 */
 package k_k_.io.stream
 
-import java.io.{InputStream, OutputStream,
-                File, FileInputStream, FileOutputStream,
-                Reader, InputStreamReader,
-                ByteArrayOutputStream}
+import java.io._
 import java.nio.charset.{Charset, CharsetDecoder}
 
 
 /**
  *  Functions for bulk handling byte-oriented input.
  */
-object Byte_Input {
+object ByteInput {
 
   /**
    *  Read entire file into `Array[Byte]`
    */
-  def slurp_file(file: File): Array[Byte] = {
+  def slurpFile(file: File): Array[Byte] = {
     val fos = new FileInputStream(file)
     try {
-      slurp_stream(fos)
-    } finally { fos.close }
+      slurpStream(fos)
+    } finally { fos.close() }
   }
   
   /**
    *  Read entire contents of `InputStream` into `Array[Byte]`; `InputStream`
    *  not closed
    */
-  def slurp_stream(is: InputStream): Array[Byte] = {
+  def slurpStream(is: InputStream): Array[Byte] = {
     val bos = new ByteArrayOutputStream
     try {
-      copy_stream(is, bos)
+      copyStream(is, bos)
       bos.toByteArray
-    } finally { bos.close }
+    } finally { bos.close() }
   }
 
   /**
    *  Write entire contents of `InputStream` to `File`; `InputStream` not closed
    */
-  def copy_stream(is: InputStream, file: File): Boolean = {
+  def copyStream(is: InputStream, file: File): Boolean = {
     val os = new FileOutputStream(file)
     try {
-      copy_stream(is, os)
-    } finally { os.close }
+      copyStream(is, os)
+    } finally { os.close() }
   }
 
   /**
    *  Write all contents of `InputStream` to `OutputStream`; neither stream
    *  closed
    */
-  def copy_stream(is: InputStream, os: OutputStream, chunk_size: Int = 4096):
+  def copyStream(is: InputStream, os: OutputStream, chunkSize: Int = 4096):
       Boolean = {
-    val buff = new Array[Byte](chunk_size)
+    val buff = new Array[Byte](chunkSize)
 
-    def siphon_bytes {
+    def siphonBytes() {
       val n = is.read(buff)
       if (n > 0)
         os.write(buff, 0, n)
       if (n >= 0)
-        siphon_bytes // keep siphoning
+        siphonBytes() // keep siphoning
     }
 
-    siphon_bytes
+    siphonBytes()
     true
   }
 }
@@ -86,36 +83,36 @@ object Byte_Input {
 /**
  *  Functions for bulk handling character-oriented input.
  */
-object Char_Input {
+object CharInput {
 
   /**
    *  Read entire text `File` into `String`.
    */
-  def slurp_text_file(file: File, charset_name: String = "UTF-8"): String = {
+  def slurpTextFile(file: File, charsetName: String = "UTF-8"): String = {
     val fos = new FileInputStream(file)
     try {
-      slurp_text_stream(fos, charset_name)
-    } finally { fos.close }
+      slurpTextStream(fos, charsetName)
+    } finally { fos.close() }
   }
 
   /**
    *  Read entire text `File` into `String`.
    */
-  def slurp_text_file(file: File, charset: Charset): String = {
+  def slurpTextFile(file: File, charset: Charset): String = {
     val fos = new FileInputStream(file)
     try {
-      slurp_text_stream(fos, charset)
-    } finally { fos.close }
+      slurpTextStream(fos, charset)
+    } finally { fos.close() }
   }
 
   /**
    *  Read entire text `File` into `String`.
    */
-  def slurp_text_file(file: File, charset_decoder: CharsetDecoder): String = {
+  def slurpTextFile(file: File, charsetDecoder: CharsetDecoder): String = {
     val fos = new FileInputStream(file)
     try {
-      slurp_text_stream(fos, charset_decoder)
-    } finally { fos.close }
+      slurpTextStream(fos, charsetDecoder)
+    } finally { fos.close() }
   }
 
 
@@ -123,52 +120,52 @@ object Char_Input {
    *  Read entire contents of `InputStream` into `String`; `InputStream` not
    *  closed
    */
-  def slurp_text_stream(is: InputStream, charset_name: String = "UTF-8"):
+  def slurpTextStream(is: InputStream, charsetName: String = "UTF-8"):
       String =
-    slurp_reader(new InputStreamReader(is, charset_name))
+    slurpReader(new InputStreamReader(is, charsetName))
 
   /**
    *  Read entire contents of `InputStream` into `String`; `InputStream` not
    *  closed
    */
-  def slurp_text_stream(is: InputStream, charset: Charset):
+  def slurpTextStream(is: InputStream, charset: Charset):
       String =
-    slurp_reader(new InputStreamReader(is, charset))
+    slurpReader(new InputStreamReader(is, charset))
 
   /**
    *  Read entire contents of `InputStream` into `String`; `InputStream` not
    *  closed
    */
-  def slurp_text_stream(is: InputStream, charset_decoder: CharsetDecoder):
+  def slurpTextStream(is: InputStream, charsetDecoder: CharsetDecoder):
       String =
-    slurp_reader(new InputStreamReader(is, charset_decoder))
+    slurpReader(new InputStreamReader(is, charsetDecoder))
 
 
   /**
    *  Read entire contents of `Reader` into `String`; `Reader` not closed
    */
-  def slurp_reader(in: Reader): String = {
+  def slurpReader(in: Reader): String = {
     val builder = new StringBuilder
-    copy_reader(in, builder)
+    copyReader(in, builder)
     builder.toString
   }
 
   /**
    *  Write all contents of `Reader` to `StringBuilder`; `Reader` not closed
    */
-  def copy_reader(in: Reader, builder: StringBuilder, chunk_size: Int = 4096):
+  def copyReader(in: Reader, builder: StringBuilder, chunkSize: Int = 4096):
       Boolean = {
-    val buff = new Array[Char](chunk_size)
+    val buff = new Array[Char](chunkSize)
 
-    def siphon_bytes {
+    def siphonBytes() {
       val n = in.read(buff)
       if (n > 0)
         builder.appendAll(buff, 0, n)
       if (n >= 0)
-        siphon_bytes // keep siphoning
+        siphonBytes() // keep siphoning
     }
 
-    siphon_bytes
+    siphonBytes()
     true
   }
 }

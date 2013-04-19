@@ -23,90 +23,67 @@ package k_k_.value
  */
 object Clamp {
 
-  /**
-   *  Returns `value`, if need be, massaged to be within
-   *  `[ min_value, max_value ]`
-   */
-  def apply[T](value: T, min_value: T, max_value: T)
-              (implicit cmp: Ordering[T]): T =
-    if      (cmp.lt(value, min_value)) min_value
-    else if (cmp.lt(max_value, value)) max_value
+  /** @return `value`, perhaps modified to be within `[ minValue, maxValue ]` */
+  def apply[T](value: T, minValue: T, maxValue: T)(implicit cmp: Ordering[T]):
+      T =
+    if      (cmp.lt(value, minValue)) minValue
+    else if (cmp.lt(maxValue, value)) maxValue
     else value
 
-  /**
-   *  Returns `Some(value)` iff within `[ min_value, max_value ]`; else `None`
-   */
-  def ?[T](value: T, min_value: T, max_value: T)
-          (implicit cmp: Ordering[T]): Option[T] =
-    if      (cmp.lt(value, min_value)) None
-    else if (cmp.lt(max_value, value)) None
+  /** @return `Some(value)` iff within `[ minValue, maxValue ]`; else `None` */
+  def ?[T](value: T, minValue: T, maxValue: T)(implicit cmp: Ordering[T]):
+      Option[T] =
+    if      (cmp.lt(value, minValue)) None
+    else if (cmp.lt(maxValue, value)) None
     else                               Some(value)
 
 
-  /**
-   *  Returns `value`, if need be, massaged to be less than `max_value`
-   */
-  def <[T](value: T, max_value: T)(implicit cmp: Ordering[T]): T =
-    cmp_op( cmp.lt _ )(value, max_value)
+  /** @return `value`, perhaps modified to be less than `maxValue` */
+  def <[T](value: T, maxValue: T)(implicit cmp: Ordering[T]): T =
+    cmpOp( cmp.lt _ )(value, maxValue)
 
   // currying-style seems less clearly expressed, and appears to run into syntax
   // issues, due to implicit:
   // Clamp.<(a, b) is too many args, and Clamp.<()(a, b) gives too few args err!
   //  def <[T](implicit cmp: Ordering[T]): (T, T) => T =
-  //    cmp_op( cmp.lt _ ) _
+  //    cmpOp( cmp.lt _ ) _
 
-  /**
-   *  Returns `value`, if need be, massaged to be less than or equal to
-   *  `max_value`
-   */
-  def <=[T](value: T, max_value: T)(implicit cmp: Ordering[T]): T =
-    cmp_op( cmp.lteq _ )(value, max_value)
+  /** @return `value` perhaps modified to be less than or equal to `maxValue` */
+  def <=[T](value: T, maxValue: T)(implicit cmp: Ordering[T]): T =
+    cmpOp( cmp.lteq _ )(value, maxValue)
 
-  /**
-   *  Returns `value`, if need be, massaged to be greater than `min_value`
-   */
-  def >[T](value: T, min_value: T)(implicit cmp: Ordering[T]): T =
-    cmp_op( cmp.gt _ )(value, min_value)
+  /** @return `value`, perhaps modified to be greater than `minValue` */
+  def >[T](value: T, minValue: T)(implicit cmp: Ordering[T]): T =
+    cmpOp( cmp.gt _ )(value, minValue)
 
-  /**
-   *  Returns `value`, if need be, massaged to be greater than or equal to
-   *  `min_value`
-   */
-  def >=[T](value: T, min_value: T)(implicit cmp: Ordering[T]): T =
-    cmp_op( cmp.gteq _ )(value, min_value)
+  /** @return `value`, perhaps modified to be greater or equal to `minValue` */
+  def >=[T](value: T, minValue: T)(implicit cmp: Ordering[T]): T =
+    cmpOp( cmp.gteq _ )(value, minValue)
 
 
-  /**
-   *  Returns `Some(value)` iff less than `max_value`; else `None`
-   */
-  def ?<[T](value: T, max_value: T)(implicit cmp: Ordering[T]): Option[T] =
-    cmp_op_opt( cmp.lt _ )(value, max_value)
+  /** @return `Some(value)` iff less than `maxValue`; else `None` */
+  def ?<[T](value: T, maxValue: T)(implicit cmp: Ordering[T]): Option[T] =
+    cmpOpOpt( cmp.lt _ )(value, maxValue)
 
-  /**
-   *  Returns `Some(value)` iff less than or equal to `max_value`; else `None`
-   */
-  def ?<=[T](value: T, max_value: T)(implicit cmp: Ordering[T]): Option[T] =
-    cmp_op_opt( cmp.lteq _ )(value, max_value)
+  /** @return `Some(value)` iff less than or equal to `maxValue`; else `None` */
+  def ?<=[T](value: T, maxValue: T)(implicit cmp: Ordering[T]): Option[T] =
+    cmpOpOpt( cmp.lteq _ )(value, maxValue)
 
-  /**
-   *  Returns `Some(value)` iff greater than `min_value`; else `None`
-   */
-  def ?>[T](value: T, min_value: T)(implicit cmp: Ordering[T]): Option[T] =
-    cmp_op_opt( cmp.gt _ )(value, min_value)
+  /** @return `Some(value)` iff greater than `minValue`; else `None` */
+  def ?>[T](value: T, minValue: T)(implicit cmp: Ordering[T]): Option[T] =
+    cmpOpOpt( cmp.gt _ )(value, minValue)
 
-  /**
-   * Returns `Some(value)` iff greater than or equal to `min_value`; else `None`
-   */
-  def ?>=[T](value: T, min_value: T)(implicit cmp: Ordering[T]): Option[T] =
-    cmp_op_opt( cmp.gteq _ )(value, min_value)
+  /** @return `Some(value)` iff greater or equal to `minValue`; else `None` */
+  def ?>=[T](value: T, minValue: T)(implicit cmp: Ordering[T]): Option[T] =
+    cmpOpOpt( cmp.gteq _ )(value, minValue)
 
 
-  private def cmp_op[T](op: (T, T) => Boolean)(value: T, op_value: T): T =
-    if (op(value, op_value)) value
-    else                     op_value
+  private def cmpOp[T](op: (T, T) => Boolean)(value: T, opValue: T): T =
+    if (op(value, opValue)) value
+    else                    opValue
 
-  private def cmp_op_opt[T](op: (T, T) => Boolean)
-                           (value: T, op_value: T): Option[T] =
-    if (op(value, op_value)) Some(value)
-    else                     None
+  private def cmpOpOpt[T](op: (T, T) => Boolean)(value: T, opValue: T):
+      Option[T] =
+    if (op(value, opValue)) Some(value)
+    else                    None
 }

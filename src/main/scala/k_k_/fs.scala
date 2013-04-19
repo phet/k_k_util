@@ -23,36 +23,35 @@ import java.io.File
 /**
  *  Functions for deriving a `File` path name from an existing one.
  */
-object Derive_Name {
+object DeriveName {
 
   /**
-   *  Returns the file path resulting from adding a directory immediately below
+   *  @return the file path resulting from adding a directory immediately below
    *  this directory (if `file` exists and is a directory), or else below this
    *  file path's parent directory, and with the same (base)name as `file`.
    */
-  def via_subdir(file: File, subdir_name: String): File = {
+  def viaSubdir(file: File, subdirName: String): File = {
     if (file.isDirectory)
-      new File(file.getPath + File.separatorChar + subdir_name)
+      new File(file.getPath, subdirName)
     else
       new File(Option(file.getParent).map { _ + File.separator }.getOrElse("") +
-               subdir_name + File.separator + file.getName)
+               subdirName + File.separator + file.getName)
   }
 
   /**
-   *  Returns the file path resulting from adding a suffix immediately before
+   *  @return the file path resulting from adding a suffix immediately before
    *  the given file path's trailing extension (if any).
    *
    *  NOTE: only the trailing extension is taken into account (e.g. in
-   *        `xyz_file.tar.gz` only `.gz` is considered the trailing extension).
+   *        `xyzFile.tar.gz` only `.gz` is considered the trailing extension).
    */
-  def via_suffix(file: File, suffix: String): File = {
-    val Has_Dot_Ext = "^(.*?)(\\.[^.]*)$".r
-    val derived_name = file.getName match {
-      case Has_Dot_Ext(base_name, ext) => base_name + suffix + ext
-      case no_ext_name => no_ext_name + suffix
+  def viaSuffix(file: File, suffix: String): File = {
+    val HasDotExt = "^(.*?)(\\.[^.]*)$".r
+    val derivedName = file.getName match {
+      case HasDotExt(baseName, ext) => baseName + suffix + ext
+      case noExtName => noExtName + suffix
     }
-    new File(Option(file.getParent).getOrElse("") + File.separator +
-             derived_name)
+    new File(Option(file.getParent).getOrElse("") + File.separator +derivedName)
   }
 }
 
@@ -65,9 +64,9 @@ object Ensure {
   /**
    *  Guarantees the `file`'s parent directory exists, creating it if necessary.
    *
-   *  @return    `false` iff parent dir does not exist and could not be created.
+   *  @return `false` iff parent dir does not exist and could not be created.
    */
-  def parent_dir_exists(file: File): Boolean =
+  def parentDirExists(file: File): Boolean =
     file.isDirectory ||
     file.getParentFile.isDirectory ||
     file.getParentFile.mkdirs

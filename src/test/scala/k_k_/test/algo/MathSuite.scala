@@ -1,5 +1,5 @@
 /*
-   file: k_k_/test/algo/Math_Suite.scala
+   file: k_k_/test/algo/MathSuite.scala
 
    Copyright (c) 2011 Corbin "Kip" Kohn
 
@@ -24,31 +24,30 @@ import k_k_.algo.Math
 
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
-class Math_Suite extends FunSuite with ShouldMatchers {
+class MathSuite extends FunSuite with ShouldMatchers {
 
   class Funky(val n: Int, name: String) {
     override val toString = "Funky(%d, \"%s\")".format(n, name)
   }
 
-  implicit val Funky_Ordering = Ordering.Int.on[Funky]( _.n )
+  implicit val FunkyOrdering = Ordering.Int.on[Funky]( _.n )
 
-  test("max_min") {
-    Math.max_min(16, 9)      should be ((16, 9))
-    Math.max_min(10, 29)     should be ((29, 10))
-    Math.max_min(15.2, 15.9) should be ((15.9, 15.2))
+  test("maxMin") {
+    Math.maxMin(16, 9)      should be ((16, 9))
+    Math.maxMin(10, 29)     should be ((29, 10))
+    Math.maxMin(15.2, 15.9) should be ((15.9, 15.2))
 
     val (a, b) = (new Funky(16, "a"), new Funky(16, "b"))
-    Math.max_min(a, b) should be ((a, b))
+    Math.maxMin(a, b) should be ((a, b))
   }
 
 
-  test("min_max") {
-    Math.min_max(16, 9)      should be ((9, 16))
-    Math.min_max(10, 29)     should be ((10, 29))
-    Math.min_max(15.2, 15.9) should be ((15.2, 15.9))
+  test("minMax") {
+    Math.minMax(16, 9)      should be ((9, 16))
+    Math.minMax(10, 29)     should be ((10, 29))
+    Math.minMax(15.2, 15.9) should be ((15.2, 15.9))
 
     val (a, b) = (new Funky(16, "a"), new Funky(16, "b"))
-    Math.min_max(a, b) should be ((a, b))
+    Math.minMax(a, b) should be ((a, b))
   }
 }
-
