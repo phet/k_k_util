@@ -1,7 +1,7 @@
 /*
    file: k_k_/io/data.scala
 
-   Copyright (c) 2011 Corbin "Kip" Kohn
+   Copyright (c) 2011-2013 Corbin "Kip" Kohn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

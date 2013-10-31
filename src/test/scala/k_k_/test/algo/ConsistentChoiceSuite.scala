@@ -1,7 +1,7 @@
 /*
    file: k_k_/test/algo/ConsistentChoiceSuite.scala
 
-   Copyright (c) 2011 Corbin "Kip" Kohn
+   Copyright (c) 2011-2013 Corbin "Kip" Kohn
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -27,7 +27,8 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.ConcurrentHashMap
 
 import scala.collection.JavaConversions._
-import scala.collection.mutable.ConcurrentMap
+import scala.collection.concurrent.{Map => ConcurrentMap}
+import scala.reflect.{ClassTag, classTag}
 
 import k_k_.data.rand._
 
@@ -36,10 +37,10 @@ import k_k_.algo.ConsistentChoice
 
 // NOTE: since type class bound ClassManifest (not Manifest), unable to verify
 // type ctor params (i.e. HOType[_] verifiable, but not ArgT in HOType[ArgT])
-class IsInstanceOfMatcher[T: ClassManifest] extends BeMatcher[Any] {
+class IsInstanceOfMatcher[T: ClassTag] extends BeMatcher[Any] {
   def apply(x: Any) = {
     val (xClass, expectedClass) =
-      (x.asInstanceOf[AnyRef].getClass, classManifest[T].erasure)
+      (x.asInstanceOf[AnyRef].getClass, classTag[T].runtimeClass)
     MatchResult(
       expectedClass.isAssignableFrom(xClass),
       xClass.getName + " is *not* instance of " + expectedClass.getName,
